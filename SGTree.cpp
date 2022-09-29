@@ -18,12 +18,7 @@ public:
 	}
 
 	int query(int ind, int low, int high, int l, int r) {
-		// no overlap
-		// l r low high or low high l r
 		if (r < low || high < l) return INT_MAX;
-
-		// complete overlap
-		// [l low high r]
 		if (low >= l && high <= r) return seg[ind];
 
 		int mid = (low + high) >> 1;
