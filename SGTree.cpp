@@ -1,13 +1,16 @@
 class SGTree {
-	vector<int> seg;
 public:
-	SGTree(int n) {
-		seg.resize(4 * n + 1);
+	vector<int> seg;
+	vector<int> v;
+	SGTree(vector<int>&arr) {
+		vector<int>t(v.size()*4);
+		seg = t;
+		v = arr;
 	}
 
-	void build(int ind, int low, int high, vector<int>&arr) {
+	void build(int ind, int low, int high) {
 		if (low == high) {
-			seg[ind] = arr[low];
+			seg[ind] = v[low];
 			return;
 		}
 
