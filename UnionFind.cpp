@@ -10,7 +10,7 @@ class DSU{
 
 	int findParent(int node)
 	{
-		if(node==parentNode)
+		if(node==parent[node])
 		return node;
 		return parent[node] = findParent(parent[node]);
 	}
