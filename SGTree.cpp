@@ -3,7 +3,7 @@ public:
 	vector<int> seg;
 	vector<int> v;
 	SGTree(vector<int>&arr) {
-		vector<int>t(v.size()*4);
+		vector<int>t(arr.size()*4);
 		seg = t;
 		v = arr;
 	}
@@ -15,8 +15,8 @@ public:
 		}
 
 		int mid = (low + high) / 2;
-		build(2 * ind + 1, low, mid, arr);
-		build(2 * ind + 2, mid + 1, high, arr);
+		build(2 * ind + 1, low, mid);
+		build(2 * ind + 2, mid + 1, high);
 		seg[ind] = min(seg[2 * ind + 1], seg[2 * ind + 2]);
 	}
 
