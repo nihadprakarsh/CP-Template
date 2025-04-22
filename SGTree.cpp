@@ -1,43 +1,63 @@
-class SGTree {
+class SegTree{
 public:
-	vector<int> seg;
-	vector<int> v;
-	SGTree(vector<int>&arr) {
-		vector<int>t(arr.size()*4);
-		seg = t;
-		v = arr;
+	int len;
+	vector<int> t;
+	
+	SegTree(){}
+	SegTree(int l){
+		len = l;
+		t.resize(4 * len);
 	}
-
-	void build(int ind, int low, int high) {
-		if (low == high) {
-			seg[ind] = v[low];
+	
+	// Build Segment Tree -- build(a, 1, 0, len-1); 
+	void build(vector<int>& a, int v, int tl, int tr){
+		if(tl == tr){
+			t[v] = a[tl];
 			return;
 		}
-
-		int mid = (low + high) / 2;
-		build(2 * ind + 1, low, mid);
-		build(2 * ind + 2, mid + 1, high);
-		seg[ind] = min(seg[2 * ind + 1], seg[2 * ind + 2]);
+		int tm = (tl + tr)/2;
+		build(a, 2*v, tl, tm);
+		build(a, 2*v+1, tm+1, tr);
+		t[v] = t[2*v] + t[2*v+1];
 	}
-
-	int query(int ind, int low, int high, int l, int r) {
-		if (r < low || high < l) return INT_MAX;
-		if (low >= l && high <= r) return seg[ind];
-
-		int mid = (low + high) >> 1;
-		int left = query(2 * ind + 1, low, mid, l, r);
-		int right = query(2 * ind + 2, mid + 1, high, l, r);
-		return min(left, right);
+	
+	// Query input question is = [l, r] included -- query(1, 0, len-1, l, r)
+	int query(int v, int tl, int tr, int l, int r){
+		if(tl > r || tr < l) return 0; // no overlap
+		if(l <= tl && tr <= r) return t[v]; //Full overlap
+		
+		// Partial Overlap
+		int tm = (tl + tr)/2;
+		int leftAns = query(2*v, tl, tm, l, r);
+		int rightAns = query(2*v+1, tm+1, tr, l, r);
+		return leftAns + rightAns;
 	}
-	void update(int ind, int low, int high, int i, int val) {
-		if (low == high) {
-			seg[ind] = val;
+	
+	// Update at index id of nums to a value val (assign/override/set) -- update(1, 0, len-1, id, val) 
+	void update(int v, int tl, int tr, int id, int val){
+		// reached leaf node
+		if(tl == id && tr == id){
+			t[v] = val;
 			return;
 		}
-
-		int mid = (low + high) >> 1;
-		if (i <= mid) update(2 * ind + 1, low, mid, i, val);
-		else update(2 * ind + 2, mid + 1, high, i, val);
-		seg[ind] = min(seg[2 * ind + 1], seg[2 * ind + 2]);
+		if(id > tr || id < tl) return;
+		
+		int tm = (tl + tr)/2;
+		update(2*v, tl, tm, id, val);
+		update(2*v+1, tm+1, tr, id, val);
+		t[v] = t[2*v] + t[2*v+1];
+	}
+	
+	//over-ridden functions
+	void build(vector<int>& a){
+		build(a, 1, 0, len-1);
+	}
+	
+	int query(int l, int r){
+		return query(1, 0, len-1, l, r);
+	}
+	
+	void update(int id, int val){
+		update(1, 0, len-1, id, val);
 	}
 };
