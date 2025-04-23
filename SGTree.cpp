@@ -1,63 +1,57 @@
-class SegTree{
+class SegTree {
 public:
 	int len;
 	vector<int> t;
 	
-	SegTree(){}
-	SegTree(int l){
+	SegTree() {}
+	SegTree(int l) {
 		len = l;
 		t.resize(4 * len);
 	}
 	
-	// Build Segment Tree -- build(a, 1, 0, len-1); 
-	void build(vector<int>& a, int v, int tl, int tr){
-		if(tl == tr){
+	void build(vector<int>& a, int v, int tl, int tr) {
+		if(tl == tr) {
 			t[v] = a[tl];
 			return;
 		}
-		int tm = (tl + tr)/2;
-		build(a, 2*v, tl, tm);
-		build(a, 2*v+1, tm+1, tr);
-		t[v] = t[2*v] + t[2*v+1];
+		int tm = (tl + tr) / 2;
+		build(a, 2 * v, tl, tm);
+		build(a, 2 * v + 1, tm + 1, tr);
+		t[v] = t[2 * v] + t[2 * v + 1];
 	}
 	
-	// Query input question is = [l, r] included -- query(1, 0, len-1, l, r)
-	int query(int v, int tl, int tr, int l, int r){
-		if(tl > r || tr < l) return 0; // no overlap
-		if(l <= tl && tr <= r) return t[v]; //Full overlap
+	int query(int v, int tl, int tr, int l, int r) {
+		if(tl > r || tr < l) return 0;
+		if(l <= tl && tr <= r) return t[v];
 		
-		// Partial Overlap
-		int tm = (tl + tr)/2;
-		int leftAns = query(2*v, tl, tm, l, r);
-		int rightAns = query(2*v+1, tm+1, tr, l, r);
+		int tm = (tl + tr) / 2;
+		int leftAns = query(2 * v, tl, tm, l, r);
+		int rightAns = query(2 * v + 1, tm + 1, tr, l, r);
 		return leftAns + rightAns;
 	}
 	
-	// Update at index id of nums to a value val (assign/override/set) -- update(1, 0, len-1, id, val) 
-	void update(int v, int tl, int tr, int id, int val){
-		// reached leaf node
-		if(tl == id && tr == id){
+	void update(int v, int tl, int tr, int id, int val) {
+		if(tl == id && tr == id) {
 			t[v] = val;
 			return;
 		}
 		if(id > tr || id < tl) return;
 		
-		int tm = (tl + tr)/2;
-		update(2*v, tl, tm, id, val);
-		update(2*v+1, tm+1, tr, id, val);
-		t[v] = t[2*v] + t[2*v+1];
+		int tm = (tl + tr) / 2;
+		update(2 * v, tl, tm, id, val);
+		update(2 * v + 1, tm + 1, tr, id, val);
+		t[v] = t[2 * v] + t[2 * v + 1];
 	}
 	
-	//over-ridden functions
-	void build(vector<int>& a){
-		build(a, 1, 0, len-1);
+	void build(vector<int>& a) {
+		build(a, 1, 0, len - 1);
 	}
 	
-	int query(int l, int r){
-		return query(1, 0, len-1, l, r);
+	int query(int l, int r) {
+		return query(1, 0, len - 1, l, r);
 	}
 	
-	void update(int id, int val){
-		update(1, 0, len-1, id, val);
+	void update(int id, int val) {
+		update(1, 0, len - 1, id, val);
 	}
 };
